@@ -64,8 +64,6 @@ class Portfolio:
     
     def _execute_sell(self, order: Order, price: float, trade_value: float) -> bool:
         """Execute a sell order."""
-        current_position = self._positions.get(order.ticker)
-        
         # For simplicity, allow short selling (negative positions)
         # In real trading, this would require margin requirements
         

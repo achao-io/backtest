@@ -4,7 +4,7 @@ import pytest
 from datetime import datetime
 from backtest.strategy import Strategy
 from backtest.data_loader import Bar
-from backtest.order import Order, Position
+from backtest.order import Position
 from strategies.buy_and_hold import BuyAndHoldStrategy
 
 

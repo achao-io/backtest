@@ -5,7 +5,6 @@ from datetime import datetime
 from backtest.engine import Engine, Results
 from backtest.strategy import Strategy
 from backtest.data_loader import Bar
-from backtest.order import Order
 
 
 # Simple test strategy for engine testing

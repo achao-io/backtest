@@ -2,7 +2,7 @@
 
 import pytest
 from backtest.portfolio import Portfolio
-from backtest.order import Order, Position
+from backtest.order import Order
 
 
 class TestPortfolio:
@@ -121,6 +121,8 @@ class TestPortfolio:
         aapl_position = portfolio.get_position("AAPL")
         msft_position = portfolio.get_position("MSFT")
         
+        assert aapl_position is not None
+        assert msft_position is not None
         assert aapl_position.quantity == 100
         assert msft_position.quantity == 50
     

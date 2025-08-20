@@ -7,7 +7,6 @@ from datetime import datetime
 from .data_loader import Bar
 from .strategy import Strategy
 from .portfolio import Portfolio
-from .order import Order
 
 
 @dataclass
