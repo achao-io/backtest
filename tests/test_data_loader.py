@@ -2,13 +2,12 @@
 
 import pytest
 from datetime import datetime
-from pathlib import Path
 from backtest.data_loader import DataLoader, Bar
 
 
 class TestBar:
     """Test the Bar dataclass."""
-    
+
     def test_valid_bar_creation(self):
         """Test creating a valid bar."""
         bar = Bar(
@@ -18,7 +17,7 @@ class TestBar:
             low=95.0,
             close=102.0,
             volume=1000,
-            ticker="SPY"
+            ticker="SPY",
         )
         assert bar.open == 100.0
         assert bar.high == 105.0
@@ -26,7 +25,7 @@ class TestBar:
         assert bar.close == 102.0
         assert bar.volume == 1000
         assert bar.ticker == "SPY"
-    
+
     def test_bar_validation_high_too_low(self):
         """Test that high must be >= max(open, close, low)."""
         with pytest.raises(ValueError, match="High.*must be"):
@@ -36,9 +35,9 @@ class TestBar:
                 high=90.0,  # Invalid: high < open
                 low=95.0,
                 close=102.0,
-                volume=1000
+                volume=1000,
             )
-    
+
     def test_bar_validation_low_too_high(self):
         """Test that low must be <= min(open, close, high)."""
         # This will actually trigger the high validation first since low=110 > high=105
@@ -49,59 +48,72 @@ class TestBar:
                 high=105.0,
                 low=110.0,  # Invalid: low > high
                 close=102.0,
-                volume=1000
+                volume=1000,
             )
 
 
 class TestDataLoader:
     """Test the DataLoader class."""
-    
+
     def test_load_sample_data(self):
         """Test loading the sample Polygon data file."""
-        data = DataLoader.from_polygon_csv('data/example/stocks_minute_candlesticks_example.csv')
-        
+        data = DataLoader.from_polygon_csv(
+            "data/example/stocks_minute_candlesticks_example.csv"
+        )
+
         # Basic checks
         assert len(data) > 0, "Should load some data"
-        assert all(isinstance(bar, Bar) for bar in data), "All items should be Bar objects"
-        
+        assert all(isinstance(bar, Bar) for bar in data), (
+            "All items should be Bar objects"
+        )
+
         # Check first bar properties
         first_bar = data[0]
-        assert first_bar.ticker == 'MSFT', "Should have correct ticker"
+        assert first_bar.ticker == "MSFT", "Should have correct ticker"
         assert first_bar.volume > 0, "Volume should be positive"
         assert first_bar.open > 0, "Price should be positive"
         assert first_bar.high >= first_bar.open, "High should be >= open"
         assert first_bar.low <= first_bar.open, "Low should be <= open"
-        
+
         # Check data is sorted by timestamp
         timestamps = [bar.timestamp for bar in data]
         assert timestamps == sorted(timestamps), "Data should be sorted by timestamp"
-    
+
     def test_file_not_found(self):
         """Test handling of missing files."""
         with pytest.raises(FileNotFoundError):
-            DataLoader.from_polygon_csv('nonexistent.csv')
-    
+            DataLoader.from_polygon_csv("nonexistent.csv")
+
     def test_iter_polygon_csv(self):
         """Test the iterator interface."""
-        bars_list = list(DataLoader.iter_polygon_csv('data/example/stocks_minute_candlesticks_example.csv'))
-        bars_loaded = DataLoader.from_polygon_csv('data/example/stocks_minute_candlesticks_example.csv')
-        
+        bars_list = list(
+            DataLoader.iter_polygon_csv(
+                "data/example/stocks_minute_candlesticks_example.csv"
+            )
+        )
+        bars_loaded = DataLoader.from_polygon_csv(
+            "data/example/stocks_minute_candlesticks_example.csv"
+        )
+
         # Should get same number of bars
         assert len(bars_list) == len(bars_loaded)
-        
+
         # All bars should be present (order might differ due to sorting)
         loaded_timestamps = {bar.timestamp for bar in bars_loaded}
         iter_timestamps = {bar.timestamp for bar in bars_list}
         assert loaded_timestamps == iter_timestamps
-    
-    @pytest.mark.parametrize("field,value", [
-        ("open", "invalid"),
-        ("high", ""),
-        ("low", "not_a_number"),
-        ("close", "abc"),
-        ("volume", "xyz"),
-        ("window_start", "not_timestamp"),
-    ])
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("open", "invalid"),
+            ("high", ""),
+            ("low", "not_a_number"),
+            ("close", "abc"),
+            ("volume", "xyz"),
+            ("window_start", "not_timestamp"),
+        ],
+    )
     def test_malformed_data_handling(self, tmp_path, field, value):
         """Test handling of malformed CSV data."""
         # Create a test CSV with malformed data
@@ -109,61 +121,64 @@ class TestDataLoader:
         test_csv.write_text(
             "ticker,volume,open,close,high,low,window_start,transactions\n"
             f"TEST,1000,100.0,101.0,102.0,99.0,{value if field == 'window_start' else '1704096000000000000'},10\n"
-            if field != "window_start" else
-            "ticker,volume,open,close,high,low,window_start,transactions\n"
+            if field != "window_start"
+            else "ticker,volume,open,close,high,low,window_start,transactions\n"
             f"TEST,{value if field == 'volume' else '1000'},{value if field == 'open' else '100.0'},"
             f"{value if field == 'close' else '101.0'},{value if field == 'high' else '102.0'},"
             f"{value if field == 'low' else '99.0'},1704096000000000000,10\n"
         )
-        
+
         # Should not crash but may return empty list
         data = DataLoader.from_polygon_csv(test_csv)
         # Malformed rows should be skipped
         assert isinstance(data, list)
-    
+
     def test_timeframe_detection(self):
         """Test automatic timeframe detection."""
         # Test minute data detection
-        minute_data = DataLoader.from_polygon_csv('data/example/stocks_minute_candlesticks_example.csv')
+        minute_data = DataLoader.from_polygon_csv(
+            "data/example/stocks_minute_candlesticks_example.csv"
+        )
         assert minute_data[0].timeframe == "minute", "Should detect minute timeframe"
-        
+
         # Test day data detection
-        day_data = DataLoader.from_polygon_csv('data/example/stocks_day_candlesticks_example.csv')
+        day_data = DataLoader.from_polygon_csv(
+            "data/example/stocks_day_candlesticks_example.csv"
+        )
         assert day_data[0].timeframe == "day", "Should detect day timeframe"
-    
+
     def test_explicit_timeframe(self):
         """Test explicit timeframe specification."""
         # Explicit minute timeframe
         minute_data = DataLoader.from_polygon_csv(
-            'data/example/stocks_minute_candlesticks_example.csv', 
-            timeframe="minute"
+            "data/example/stocks_minute_candlesticks_example.csv", timeframe="minute"
         )
         assert all(bar.timeframe == "minute" for bar in minute_data)
-        
+
         # Explicit day timeframe
         day_data = DataLoader.from_polygon_csv(
-            'data/example/stocks_day_candlesticks_example.csv', 
-            timeframe="day"
+            "data/example/stocks_day_candlesticks_example.csv", timeframe="day"
         )
         assert all(bar.timeframe == "day" for bar in day_data)
-    
+
     def test_timeframe_mismatch_warning(self, capsys):
         """Test warning when expected timeframe doesn't match detected."""
         # Load day data but expect minute
         DataLoader.from_polygon_csv(
-            'data/example/stocks_day_candlesticks_example.csv', 
-            timeframe="minute"
+            "data/example/stocks_day_candlesticks_example.csv", timeframe="minute"
         )
-        
+
         captured = capsys.readouterr()
         assert "Warning: Expected minute data but detected day" in captured.out
-    
+
     def test_iter_with_timeframe(self):
         """Test iterator with explicit timeframe."""
-        bars_list = list(DataLoader.iter_polygon_csv(
-            'data/example/stocks_minute_candlesticks_example.csv', 
-            timeframe="minute"
-        ))
-        
+        bars_list = list(
+            DataLoader.iter_polygon_csv(
+                "data/example/stocks_minute_candlesticks_example.csv",
+                timeframe="minute",
+            )
+        )
+
         assert len(bars_list) > 0
         assert all(bar.timeframe == "minute" for bar in bars_list)
