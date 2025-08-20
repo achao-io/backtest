@@ -1,5 +1,5 @@
 """Basic Backtesting Engine for Educational Purposes."""
 
-from .data_loader import DataLoader, Bar
+from .data_loader import DataLoader, Bar, Timeframe
 
-__all__ = ["DataLoader", "Bar"]
+__all__ = ["DataLoader", "Bar", "Timeframe"]

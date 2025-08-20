@@ -58,7 +58,7 @@ class TestDataLoader:
     
     def test_load_sample_data(self):
         """Test loading the sample Polygon data file."""
-        data = DataLoader.from_polygon_csv('data/stocks_minute_candlesticks_example.csv')
+        data = DataLoader.from_polygon_csv('data/test/stocks_minute_candlesticks_example.csv')
         
         # Basic checks
         assert len(data) > 0, "Should load some data"
@@ -83,8 +83,8 @@ class TestDataLoader:
     
     def test_iter_polygon_csv(self):
         """Test the iterator interface."""
-        bars_list = list(DataLoader.iter_polygon_csv('data/stocks_minute_candlesticks_example.csv'))
-        bars_loaded = DataLoader.from_polygon_csv('data/stocks_minute_candlesticks_example.csv')
+        bars_list = list(DataLoader.iter_polygon_csv('data/test/stocks_minute_candlesticks_example.csv'))
+        bars_loaded = DataLoader.from_polygon_csv('data/test/stocks_minute_candlesticks_example.csv')
         
         # Should get same number of bars
         assert len(bars_list) == len(bars_loaded)
@@ -120,3 +120,50 @@ class TestDataLoader:
         data = DataLoader.from_polygon_csv(test_csv)
         # Malformed rows should be skipped
         assert isinstance(data, list)
+    
+    def test_timeframe_detection(self):
+        """Test automatic timeframe detection."""
+        # Test minute data detection
+        minute_data = DataLoader.from_polygon_csv('data/test/stocks_minute_candlesticks_example.csv')
+        assert minute_data[0].timeframe == "minute", "Should detect minute timeframe"
+        
+        # Test day data detection
+        day_data = DataLoader.from_polygon_csv('data/test/stocks_day_candlesticks_example.csv')
+        assert day_data[0].timeframe == "day", "Should detect day timeframe"
+    
+    def test_explicit_timeframe(self):
+        """Test explicit timeframe specification."""
+        # Explicit minute timeframe
+        minute_data = DataLoader.from_polygon_csv(
+            'data/test/stocks_minute_candlesticks_example.csv', 
+            timeframe="minute"
+        )
+        assert all(bar.timeframe == "minute" for bar in minute_data)
+        
+        # Explicit day timeframe
+        day_data = DataLoader.from_polygon_csv(
+            'data/test/stocks_day_candlesticks_example.csv', 
+            timeframe="day"
+        )
+        assert all(bar.timeframe == "day" for bar in day_data)
+    
+    def test_timeframe_mismatch_warning(self, capsys):
+        """Test warning when expected timeframe doesn't match detected."""
+        # Load day data but expect minute
+        DataLoader.from_polygon_csv(
+            'data/test/stocks_day_candlesticks_example.csv', 
+            timeframe="minute"
+        )
+        
+        captured = capsys.readouterr()
+        assert "Warning: Expected minute data but detected day" in captured.out
+    
+    def test_iter_with_timeframe(self):
+        """Test iterator with explicit timeframe."""
+        bars_list = list(DataLoader.iter_polygon_csv(
+            'data/test/stocks_minute_candlesticks_example.csv', 
+            timeframe="minute"
+        ))
+        
+        assert len(bars_list) > 0
+        assert all(bar.timeframe == "minute" for bar in bars_list)
