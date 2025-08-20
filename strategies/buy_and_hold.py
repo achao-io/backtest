@@ -2,9 +2,9 @@
 
 from typing import List
 
-from ..backtest.strategy import Strategy
-from ..backtest.data_loader import Bar
-from ..backtest.order import Order
+from backtest.strategy import Strategy
+from backtest.data_loader import Bar
+from backtest.order import Order
 
 
 class BuyAndHoldStrategy(Strategy):
