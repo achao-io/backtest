@@ -50,6 +50,11 @@ class TestPolygonDownloader:
         mock_client = MagicMock()
         mock_session.return_value.client.return_value = mock_client
 
+        # Create downloader to trigger S3 client initialization
+        _downloader = PolygonDownloader(
+            access_key="test_key", secret_key="test_secret"
+        )
+
         # Verify session creation
         mock_session.assert_called_once_with(
             aws_access_key_id="test_key", aws_secret_access_key="test_secret"
@@ -166,5 +171,13 @@ class TestPolygonDownloader:
 
         with tempfile.TemporaryDirectory() as temp_dir:
             cache_path = Path(temp_dir) / "test_cache"
+            
+            # Create downloader which should create the cache directory
+            _downloader = PolygonDownloader(
+                access_key="test_key",
+                secret_key="test_secret", 
+                cache_dir=str(cache_path)
+            )
+            
             assert cache_path.exists()
             assert cache_path.is_dir()
