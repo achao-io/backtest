@@ -8,4 +8,6 @@ dependencies = [
     "pytest>=8.4.1",
     "ruff>=0.12.9",
     "ty>=0.0.1a19",
+    "boto3>=1.35.0",
+    "python-dotenv>=1.0.0",
 ]
