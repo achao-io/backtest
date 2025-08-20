@@ -77,7 +77,7 @@ timestamp,open,high,low,close,volume
 ## Roadmap
 
 - [x] Project setup and basic structure
-- [ ] Data loader for Polygon flat files
+- [x] Data loader for Polygon flat files
 - [ ] Basic strategy interface
 - [ ] Simple order execution
 - [ ] Portfolio tracking
