@@ -1,9 +1,8 @@
 """Statistical testing framework for strategy edge detection."""
 
 import numpy as np
-import pandas as pd
 from dataclasses import dataclass
-from datetime import date, datetime
+from datetime import date
 from typing import List, Dict, Tuple, Optional
 from scipy import stats
 import random
@@ -322,26 +321,26 @@ class StatisticalTester:
         sharpes = [r.sharpe_ratio for r in results]
         wins = [r.beat_benchmark for r in results]
         
-        mean_return = np.mean(returns)
-        std_return = np.std(returns, ddof=1) if len(returns) > 1 else 0
-        win_rate = np.mean(wins)
-        mean_sharpe = np.mean(sharpes)
+        mean_return = float(np.mean(returns))
+        std_return = float(np.std(returns, ddof=1)) if len(returns) > 1 else 0.0
+        win_rate = float(np.mean(wins))
+        mean_sharpe = float(np.mean(sharpes))
         
         # T-test: null hypothesis that mean return equals benchmark return
         if len(returns) > 1 and std_return > 0:
-            t_stat = (mean_return - benchmark_return) / (std_return / np.sqrt(len(returns)))
-            p_value = 2 * (1 - stats.t.cdf(abs(t_stat), len(returns) - 1))  # Two-tailed test
+            t_stat = float((mean_return - benchmark_return) / (std_return / np.sqrt(len(returns))))
+            p_value = float(2 * (1 - stats.t.cdf(abs(t_stat), len(returns) - 1)))  # Two-tailed test
             is_significant = p_value < 0.05
             
             # 95% confidence interval for mean return
-            t_critical = stats.t.ppf(0.975, len(returns) - 1)
+            t_critical = float(stats.t.ppf(0.975, len(returns) - 1))
             margin_error = t_critical * (std_return / np.sqrt(len(returns)))
-            ci_lower = mean_return - margin_error
-            ci_upper = mean_return + margin_error
+            ci_lower = float(mean_return - margin_error)
+            ci_upper = float(mean_return + margin_error)
             confidence_interval = (ci_lower, ci_upper)
         else:
-            t_stat = 0
-            p_value = 1
+            t_stat = 0.0
+            p_value = 1.0
             is_significant = False
             confidence_interval = (mean_return, mean_return)
         
@@ -365,27 +364,27 @@ class StatisticalTester:
         print(f"{'='*60}")
         print(f"Sample Size: {summary.n_stocks} stocks")
         print(f"Benchmark Return (SPY): {summary.benchmark_return:.2%}")
-        print(f"")
-        print(f"PERFORMANCE METRICS:")
+        print("")
+        print("PERFORMANCE METRICS:")
         print(f"Mean Return: {summary.mean_return:.2%}")
         print(f"Standard Deviation: {summary.std_return:.2%}")
         print(f"Win Rate vs Benchmark: {summary.win_rate:.1%}")
         print(f"Mean Sharpe Ratio: {summary.mean_sharpe:.3f}")
-        print(f"")
-        print(f"STATISTICAL SIGNIFICANCE TEST:")
-        print(f"Null Hypothesis: Mean return = Benchmark return")
+        print("")
+        print("STATISTICAL SIGNIFICANCE TEST:")
+        print("Null Hypothesis: Mean return = Benchmark return")
         print(f"T-statistic: {summary.t_statistic:.3f}")
         print(f"P-value: {summary.p_value:.4f}")
         print(f"95% Confidence Interval: [{summary.confidence_interval[0]:.2%}, {summary.confidence_interval[1]:.2%}]")
-        print(f"")
+        print("")
         if summary.is_significant:
             if summary.mean_return > summary.benchmark_return:
-                print(f"✅ SIGNIFICANT OUTPERFORMANCE (p < 0.05)")
-                print(f"The strategy shows statistically significant edge over benchmark.")
+                print("✅ SIGNIFICANT OUTPERFORMANCE (p < 0.05)")
+                print("The strategy shows statistically significant edge over benchmark.")
             else:
-                print(f"🔴 SIGNIFICANT UNDERPERFORMANCE (p < 0.05)")
-                print(f"The strategy performs significantly worse than benchmark.")
+                print("🔴 SIGNIFICANT UNDERPERFORMANCE (p < 0.05)")
+                print("The strategy performs significantly worse than benchmark.")
         else:
-            print(f"❌ NO STATISTICAL EDGE (p >= 0.05)")
-            print(f"Cannot reject null hypothesis - no significant difference from benchmark.")
+            print("❌ NO STATISTICAL EDGE (p >= 0.05)")
+            print("Cannot reject null hypothesis - no significant difference from benchmark.")
         print(f"{'='*60}")

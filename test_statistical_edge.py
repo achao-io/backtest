@@ -27,7 +27,7 @@ def main():
     print(f"Starting capital per test: ${initial_cash:,}")
     
     # Run cross-sectional test
-    print(f"\n🔬 Running cross-sectional test...")
+    print("\n🔬 Running cross-sectional test...")
     individual_results, summary = tester.run_cross_sectional_test(
         strategy_class=BuyAndHoldStrategy,
         start_date=start_date,
@@ -44,7 +44,7 @@ def main():
     if individual_results:
         sorted_results = sorted(individual_results, key=lambda x: x.return_pct, reverse=True)
         
-        print(f"\n📊 TOP 10 PERFORMERS:")
+        print("\n📊 TOP 10 PERFORMERS:")
         print(f"{'Ticker':<8} {'Return':<8} {'Beat SPY':<10} {'Volume':<12} {'Start $':<8} {'End $':<8}")
         print("-" * 70)
         for result in sorted_results[:10]:
@@ -52,7 +52,7 @@ def main():
             print(f"{result.ticker:<8} {result.return_pct:>7.1%} {beat_marker:<10} "
                   f"{result.volume:>11,} ${result.start_price:>6.2f} ${result.end_price:>6.2f}")
         
-        print(f"\n📉 BOTTOM 10 PERFORMERS:")
+        print("\n📉 BOTTOM 10 PERFORMERS:")
         print(f"{'Ticker':<8} {'Return':<8} {'Beat SPY':<10} {'Volume':<12} {'Start $':<8} {'End $':<8}")
         print("-" * 70)
         for result in sorted_results[-10:]:
@@ -64,7 +64,7 @@ def main():
         positive_returns = [r for r in individual_results if r.return_pct > 0]
         negative_returns = [r for r in individual_results if r.return_pct < 0]
         
-        print(f"\n📈 ADDITIONAL INSIGHTS:")
+        print("\n📈 ADDITIONAL INSIGHTS:")
         print(f"Stocks with positive returns: {len(positive_returns)}/{len(individual_results)} ({len(positive_returns)/len(individual_results):.1%})")
         print(f"Stocks with negative returns: {len(negative_returns)}/{len(individual_results)} ({len(negative_returns)/len(individual_results):.1%})")
         
@@ -78,17 +78,17 @@ def main():
             avg_transaction_cost = sum(r.transaction_costs for r in individual_results) / len(individual_results)
             print(f"Average transaction costs per stock: ${avg_transaction_cost:,.2f}")
     
-    print(f"\n🎯 CONCLUSION:")
+    print("\n🎯 CONCLUSION:")
     if summary.is_significant:
         if summary.mean_return > summary.benchmark_return:
-            print(f"Buy-and-hold shows STATISTICALLY SIGNIFICANT OUTPERFORMANCE vs SPY")
-            print(f"This suggests the strategy may have a genuine edge.")
+            print("Buy-and-hold shows STATISTICALLY SIGNIFICANT OUTPERFORMANCE vs SPY")
+            print("This suggests the strategy may have a genuine edge.")
         else:
-            print(f"Buy-and-hold shows STATISTICALLY SIGNIFICANT UNDERPERFORMANCE vs SPY")
-            print(f"This suggests the strategy may be inferior to the benchmark.")
+            print("Buy-and-hold shows STATISTICALLY SIGNIFICANT UNDERPERFORMANCE vs SPY")
+            print("This suggests the strategy may be inferior to the benchmark.")
     else:
-        print(f"Buy-and-hold shows NO STATISTICALLY SIGNIFICANT EDGE vs SPY")
-        print(f"The strategy's performance is not meaningfully different from random stock selection.")
+        print("Buy-and-hold shows NO STATISTICALLY SIGNIFICANT EDGE vs SPY")
+        print("The strategy's performance is not meaningfully different from random stock selection.")
         print(f"Transaction costs ({tester.transaction_cost_pct:.1%}) may be eroding any potential edge.")
 
 

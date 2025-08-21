@@ -3,8 +3,7 @@
 Test script to run a buy-and-hold backtest on SPY from 2025-01-01 to 2025-02-01.
 """
 
-import os
-from datetime import date, datetime
+from datetime import date
 from backtest.downloader import PolygonDownloader
 from backtest.data_loader import DataLoader
 from backtest.engine import Engine
@@ -14,9 +13,8 @@ from strategies.buy_and_hold import BuyAndHoldStrategy
 def main():
     """Run SPY buy-and-hold backtest for January 2025."""
     
-    # Initialize downloader and loader
+    # Initialize downloader
     downloader = PolygonDownloader()
-    loader = DataLoader()
     
     # Download data for January 2025 (day aggregates for simplicity)
     print("Downloading SPY data for January 2025...")
@@ -87,7 +85,7 @@ def main():
     print("\n" + "="*50)
     print("BACKTEST RESULTS")
     print("="*50)
-    print(f"Strategy: Buy and Hold SPY")
+    print("Strategy: Buy and Hold SPY")
     print(f"Period: {results.start_date.date()} to {results.end_date.date()}")
     print(f"Initial Cash: ${results.initial_cash:,.2f}")
     print(f"Final Cash: ${results.final_cash:,.2f}")
@@ -107,7 +105,7 @@ def main():
     start_price = all_spy_data[0].close
     end_price = all_spy_data[-1].close
     spy_return = (end_price - start_price) / start_price
-    print(f"\nSPY Price Performance:")
+    print("\nSPY Price Performance:")
     print(f"Start Price: ${start_price:.2f}")
     print(f"End Price: ${end_price:.2f}")
     print(f"SPY Return: {spy_return:.2%}")
