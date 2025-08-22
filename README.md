@@ -1,5 +1,7 @@
 # Backtesting Engine
 
+Project to learn by doing.
+
 A backtesting framework for testing trading strategies with statistical rigor using real market data.
 
 ## Overview
