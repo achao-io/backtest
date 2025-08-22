@@ -1,6 +1,6 @@
 # Backtesting Engine
 
-Project to learn by doing.
+Learn by doing kind of project.
 
 A backtesting framework for testing trading strategies with statistical rigor using real market data.
 
