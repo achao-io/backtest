@@ -137,3 +137,6 @@ temp/
 # Backtest results
 results/
 outputs/
+
+# Private strategies
+strategies_private/
