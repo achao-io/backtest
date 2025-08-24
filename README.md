@@ -266,6 +266,10 @@ The engine includes realistic transaction costs:
 - Clear, readable code
 - Educational focus with production-quality implementation
 
+## References
+- https://blog.headlandstech.com/2017/08/03/quantitative-trading-summary/
+- https://jspauld.com/post/35126549635/how-i-made-500k-with-machine-learning-and-hft
+
 ## Contributing
 
 1. Follow the existing code style (ruff compliant)
