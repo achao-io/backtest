@@ -140,3 +140,6 @@ outputs/
 
 # Private strategies
 strategies_private/
+
+# Claude
+CLAUDE.local.md
