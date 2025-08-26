@@ -37,7 +37,7 @@ def test_alts_offering_impact():
         return
     
     # Get ALTS minute data for 2025-08-11
-    print(f"\n📈 Getting ALTS minute data for 2025-08-11...")
+    print("\n📈 Getting ALTS minute data for 2025-08-11...")
     
     try:
         # Get minute bars for the entire trading day
@@ -65,7 +65,7 @@ def test_alts_offering_impact():
         # Convert to list and analyze
         bars = list(aggs)
         
-        print(f"\nTrading session summary:")
+        print("\nTrading session summary:")
         print(f"First bar: {datetime.fromtimestamp(bars[0].timestamp / 1000)} - Open: ${bars[0].open:.2f}, Close: ${bars[0].close:.2f}")
         print(f"Last bar:  {datetime.fromtimestamp(bars[-1].timestamp / 1000)} - Open: ${bars[-1].open:.2f}, Close: ${bars[-1].close:.2f}")
         
@@ -79,7 +79,7 @@ def test_alts_offering_impact():
         session_high = max(bar.high for bar in bars)
         session_low = min(bar.low for bar in bars)
         
-        print(f"\nSession Performance:")
+        print("\nSession Performance:")
         print(f"Open: ${session_start_price:.2f}")
         print(f"High: ${session_high:.2f}")
         print(f"Low: ${session_low:.2f}")
@@ -92,10 +92,10 @@ def test_alts_offering_impact():
         news_time_utc = datetime(2025, 8, 11, 11, 0, 0)  # 7:00 AM ET
         market_open_utc = datetime(2025, 8, 11, 13, 30, 0)  # 9:30 AM ET
         
-        print(f"\n🔍 Key Timestamps:")
+        print("\n🔍 Key Timestamps:")
         print(f"News broke: {news_time_utc} (7:00 AM ET)")
         print(f"Market open: {market_open_utc} (9:30 AM ET)")
-        print(f"Gap between news and market open: 2.5 hours")
+        print("Gap between news and market open: 2.5 hours")
         
         # Check for pre-market activity (between 7:00 AM and 9:30 AM ET)
         premarket_bars = []
@@ -108,12 +108,12 @@ def test_alts_offering_impact():
             else:
                 regular_hours_bars.append(bar)
         
-        print(f"\n📊 Trading Hours Breakdown:")
+        print("\n📊 Trading Hours Breakdown:")
         print(f"Pre-market bars (before 9:30 AM ET): {len(premarket_bars)}")
         print(f"Regular hours bars (9:30 AM+ ET): {len(regular_hours_bars)}")
         
         if len(premarket_bars) > 0:
-            print(f"\n🌅 PRE-MARKET ACTIVITY (7:00 AM - 9:30 AM ET):")
+            print("\n🌅 PRE-MARKET ACTIVITY (7:00 AM - 9:30 AM ET):")
             pm_first = premarket_bars[0]
             pm_last = premarket_bars[-1]
             pm_volume = sum(bar.volume for bar in premarket_bars)
@@ -124,18 +124,18 @@ def test_alts_offering_impact():
             print(f"Pre-market volume: {pm_volume:,}")
             
             if pm_change_pct < -5:
-                print(f"✅ STRONG PRE-MARKET REACTION: >5% decline before market open")
+                print("✅ STRONG PRE-MARKET REACTION: >5% decline before market open")
             elif pm_change_pct < -2:
-                print(f"⚠️  MODERATE PRE-MARKET REACTION: >2% decline")
+                print("⚠️  MODERATE PRE-MARKET REACTION: >2% decline")
             elif pm_change_pct < 0:
-                print(f"📉 MINOR PRE-MARKET DECLINE")
+                print("📉 MINOR PRE-MARKET DECLINE")
             else:
-                print(f"📈 PRE-MARKET RISE (unexpected for offering news)")
+                print("📈 PRE-MARKET RISE (unexpected for offering news)")
         else:
-            print(f"\n🌅 No pre-market activity detected")
+            print("\n🌅 No pre-market activity detected")
         
         if len(regular_hours_bars) > 0:
-            print(f"\n🏛️ REGULAR HOURS ACTIVITY (9:30 AM+ ET):")
+            print("\n🏛️ REGULAR HOURS ACTIVITY (9:30 AM+ ET):")
             rh_first = regular_hours_bars[0]
             rh_volume = sum(bar.volume for bar in regular_hours_bars[:30])  # First 30 minutes
             
@@ -156,13 +156,13 @@ def test_alts_offering_impact():
                 fh_volume = sum(bar.volume for bar in first_hour)
                 fh_change_pct = ((first_hour[-1].close - first_hour[0].open) / first_hour[0].open) * 100
                 
-                print(f"\nFirst hour of trading:")
+                print("\nFirst hour of trading:")
                 print(f"Range: ${fh_low:.2f} - ${fh_high:.2f}")
                 print(f"Change: {fh_change_pct:+.1f}%")
                 print(f"Volume: {fh_volume:,}")
         
         # Show detailed timeline around market open
-        print(f"\n🕐 DETAILED TIMELINE (Market Open Period):")
+        print("\n🕐 DETAILED TIMELINE (Market Open Period):")
         print(f"{'Time (ET)':<12} {'Open':<7} {'High':<7} {'Low':<7} {'Close':<7} {'Volume':<8} {'Change'}")
         print("-" * 70)
         
@@ -186,26 +186,26 @@ def test_alts_offering_impact():
             print(f"{et_time.strftime('%H:%M'):<12} ${bar.open:<6.2f} ${bar.high:<6.2f} ${bar.low:<6.2f} ${bar.close:<6.2f} {bar.volume:<8,} {change_str:<7} {marker}")
         
         # Final assessment
-        print(f"\n🎯 OFFERING NEWS IMPACT ASSESSMENT:")
+        print("\n🎯 OFFERING NEWS IMPACT ASSESSMENT:")
         
         overall_negative = session_change_pct < 0
         significant_drop = session_change_pct < -5
         moderate_drop = session_change_pct < -2
         
         if significant_drop:
-            print(f"✅ HYPOTHESIS STRONGLY VALIDATED")
+            print("✅ HYPOTHESIS STRONGLY VALIDATED")
             print(f"ALTS dropped {session_change_pct:.1f}% on offering news - significant negative reaction")
         elif moderate_drop:
-            print(f"⚠️  HYPOTHESIS MODERATELY SUPPORTED") 
+            print("⚠️  HYPOTHESIS MODERATELY SUPPORTED") 
             print(f"ALTS dropped {session_change_pct:.1f}% on offering news - moderate negative reaction")
         elif overall_negative:
-            print(f"📉 HYPOTHESIS PARTIALLY SUPPORTED")
+            print("📉 HYPOTHESIS PARTIALLY SUPPORTED")
             print(f"ALTS declined {session_change_pct:.1f}% on offering news - minor negative reaction")
         else:
-            print(f"❌ HYPOTHESIS NOT SUPPORTED")
+            print("❌ HYPOTHESIS NOT SUPPORTED")
             print(f"ALTS rose {session_change_pct:.1f}% despite offering news")
         
-        print(f"\nKey Metrics:")
+        print("\nKey Metrics:")
         print(f"• Session change: {session_change_pct:+.1f}%")
         print(f"• Total volume: {total_volume:,}")
         print(f"• Intraday range: {((session_high - session_low) / session_start_price) * 100:.1f}% volatility")

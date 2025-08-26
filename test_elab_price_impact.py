@@ -7,7 +7,6 @@ import os
 from datetime import datetime
 from dotenv import load_dotenv
 from polygon import RESTClient
-from polygon.rest.models import Agg
 
 # Load environment variables
 load_dotenv()
@@ -35,7 +34,7 @@ def test_elab_price_impact():
         return
     
     # Get ELAB minute data for today INCLUDING after-hours
-    print(f"\n📈 Getting ELAB minute data for 2025-08-25 (including after-hours)...")
+    print("\n📈 Getting ELAB minute data for 2025-08-25 (including after-hours)...")
     
     try:
         # Get minute bars for extended hours (4 AM - 8 PM ET)
@@ -67,7 +66,7 @@ def test_elab_price_impact():
             print("❌ No bars in the aggregates data")
             return
         
-        print(f"\nExtended hours summary:")
+        print("\nExtended hours summary:")
         print(f"First bar: {datetime.fromtimestamp(bars[0].timestamp / 1000)} - ${bars[0].close:.2f}")
         print(f"Last bar:  {datetime.fromtimestamp(bars[-1].timestamp / 1000)} - ${bars[-1].close:.2f}")
         
@@ -90,17 +89,17 @@ def test_elab_price_impact():
         print(f"After hours bars: {len(after_hours)}")
         
         if len(after_hours) > 0:
-            print(f"After-hours trading detected!")
+            print("After-hours trading detected!")
             print(f"After-hours range: {datetime.fromtimestamp(after_hours[0].timestamp / 1000)} to {datetime.fromtimestamp(after_hours[-1].timestamp / 1000)}")
         else:
-            print(f"No after-hours trading data found")
+            print("No after-hours trading data found")
         
         # Find price action around 4:00 PM ET (21:00 UTC = 4:00 PM ET + 1 hour DST)
         # News timestamp: 2025-08-25T21:00:00Z
         news_time_utc = datetime(2025, 8, 25, 21, 0, 0)  # 4:00 PM ET
         news_timestamp_ms = int(news_time_utc.timestamp() * 1000)
         
-        print(f"\n🔍 Analyzing price action around news time...")
+        print("\n🔍 Analyzing price action around news time...")
         print(f"News broke at: {news_time_utc} UTC (4:00 PM ET)")
         
         # Find bars before and after news
@@ -130,7 +129,7 @@ def test_elab_price_impact():
             pre_news_high = max(bar.high for bar in recent_pre_news)
             pre_news_low = min(bar.low for bar in recent_pre_news)
             
-            print(f"\n📊 PRE-NEWS (30 min before):")
+            print("\n📊 PRE-NEWS (30 min before):")
             print(f"Price: ${pre_news_price:.2f}")
             print(f"Range: ${pre_news_low:.2f} - ${pre_news_high:.2f}")
             print(f"Volume: {pre_news_volume:,}")
@@ -144,7 +143,7 @@ def test_elab_price_impact():
             post_news_high = max(bar.high for bar in recent_post_news)
             post_news_low = min(bar.low for bar in recent_post_news)
             
-            print(f"\n📊 POST-NEWS (after 4:00 PM ET):")
+            print("\n📊 POST-NEWS (after 4:00 PM ET):")
             print(f"Price: ${post_news_price:.2f}")
             print(f"Range: ${post_news_low:.2f} - ${post_news_high:.2f}")
             print(f"Volume: {post_news_volume:,}")
@@ -155,24 +154,24 @@ def test_elab_price_impact():
             price_change_pct = (price_change / pre_news_price) * 100
             volume_change_pct = ((post_news_volume - pre_news_volume) / pre_news_volume) * 100 if pre_news_volume > 0 else 0
             
-            print(f"\n🎯 AFTER-HOURS IMPACT ANALYSIS:")
+            print("\n🎯 AFTER-HOURS IMPACT ANALYSIS:")
             print(f"Price change: ${price_change:+.2f} ({price_change_pct:+.1f}%)")
             print(f"Volume change: {volume_change_pct:+.1f}%")
             
             # Determine if this validates the hypothesis
             if price_change_pct < -5:
-                print(f"✅ HYPOTHESIS VALIDATED: Stock dropped >5% in after-hours after warrant news")
+                print("✅ HYPOTHESIS VALIDATED: Stock dropped >5% in after-hours after warrant news")
             elif price_change_pct < -2:
-                print(f"⚠️  MODERATE DROP: Stock dropped >2% in after-hours after warrant news")
+                print("⚠️  MODERATE DROP: Stock dropped >2% in after-hours after warrant news")
             elif price_change_pct < 0:
-                print(f"📉 MINOR DROP: Stock declined in after-hours after warrant news")
+                print("📉 MINOR DROP: Stock declined in after-hours after warrant news")
             else:
-                print(f"❌ HYPOTHESIS NOT SUPPORTED: Stock rose in after-hours after warrant news")
+                print("❌ HYPOTHESIS NOT SUPPORTED: Stock rose in after-hours after warrant news")
                 
             # Check if there was any after-hours trading at all
             after_hours_post_news = [bar for bar in recent_post_news if datetime.fromtimestamp(bar.timestamp / 1000).hour >= 21]
             if len(after_hours_post_news) > 0:
-                print(f"\n🌙 AFTER-HOURS ACTIVITY:")
+                print("\n🌙 AFTER-HOURS ACTIVITY:")
                 print(f"After-hours bars: {len(after_hours_post_news)}")
                 ah_volume = sum(bar.volume for bar in after_hours_post_news)
                 print(f"After-hours volume: {ah_volume:,}")
@@ -182,12 +181,12 @@ def test_elab_price_impact():
                     ah_change_pct = ((ah_last_price - ah_first_price) / ah_first_price) * 100
                     print(f"After-hours price change: {ah_change_pct:+.1f}% (${ah_first_price:.2f} → ${ah_last_price:.2f})")
             else:
-                print(f"\n🌙 No after-hours trading activity detected")
+                print("\n🌙 No after-hours trading activity detected")
         else:
-            print(f"\n❌ No post-news data available")
+            print("\n❌ No post-news data available")
         
         # Show detailed minute-by-minute data around news time
-        print(f"\n🕐 MINUTE-BY-MINUTE ANALYSIS:")
+        print("\n🕐 MINUTE-BY-MINUTE ANALYSIS:")
         print(f"{'Time (UTC)':<20} {'Price':<8} {'Volume':<10} {'Change':<8}")
         print("-" * 50)
         
