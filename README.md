@@ -280,4 +280,4 @@ The engine includes realistic transaction costs:
 
 ## License
 
-MIT License - see LICENSE file for details.
+MIT License
