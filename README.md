@@ -280,5 +280,5 @@ The engine includes realistic transaction costs:
 
 ## License
 
-MIT
+MIT License
 
